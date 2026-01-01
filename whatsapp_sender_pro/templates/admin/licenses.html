@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة التراخيص - WhatsApp Sender Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2c3e50;
+        }
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .sidebar {
+            background: var(--secondary);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            width: 250px;
+            padding-top: 20px;
+        }
+        .main-content {
+            margin-right: 250px;
+            padding: 20px;
+        }
+        .table th {
+            background: var(--secondary);
+            color: white;
+        }
+        .badge-active { background: #27ae60; }
+        .badge-expired { background: #e74c3c; }
+        .badge-suspended { background: #f39c12; }
+    </style>
+</head>
+<body>
+    <!-- الشريط الجانبي -->
+    <div class="sidebar">
+        <div class="text-center mb-4">
+            <h4>📱 WhatsApp Sender Pro</h4>
+            <small>لوحة تحكم المسؤول</small>
+        </div>
+
+        <nav class="nav flex-column">
+            <a class="nav-link" href="{{ url_for('admin.dashboard') }}">
+                <i class="bi bi-speedometer2 me-2"></i> لوحة التحكم
+            </a>
+            <a class="nav-link active" href="{{ url_for('admin.licenses') }}">
+                <i class="bi bi-key me-2"></i> التراخيص
+            </a>
+            <a class="nav-link" href="{{ url_for('admin.users') }}">
+                <i class="bi bi-people me-2"></i> المستخدمين
+            </a>
+            <a class="nav-link" href="{{ url_for('admin.payments') }}">
+                <i class="bi bi-credit-card me-2"></i> المدفوعات
+            </a>
+            <a class="nav-link" href="{{ url_for('admin.activity') }}">
+                <i class="bi bi-clock-history me-2"></i> سجل النشاط
+            </a>
+            <hr>
+            <a class="nav-link" href="{{ url_for('admin.logout') }}">
+                <i class="bi bi-box-arrow-right me-2"></i> تسجيل الخروج
+            </a>
+        </nav>
+    </div>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="main-content">
+        <!-- شريط العنوان والإجراءات -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="bi bi-key me-2"></i> إدارة التراخيص</h2>
+            <div>
+                <a href="{{ url_for('admin.create_license') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i> إنشاء رخصة جديدة
+                </a>
+            </div>
+        </div>
+
+        <!-- فلترة البحث -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="GET" class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="search" placeholder="🔍 بحث في التراخيص..." value="{{ search }}">
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" name="status">
+                            <option value="all" {% if status_filter == 'all' %}selected{% endif %}>كل الحالات</option>
+                            <option value="active" {% if status_filter == 'active' %}selected{% endif %}>نشطة</option>
+                            <option value="expired" {% if status_filter == 'expired' %}selected{% endif %}>منتهية</option>
+                            <option value="suspended" {% if status_filter == 'suspended' %}selected{% endif %}>موقوفة</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">بحث</button>
+                    </div>
+                    <div class="col-md-2">
+                        <a href="{{ url_for('admin.licenses') }}" class="btn btn-secondary w-100">إعادة تعيين</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- جدول التراخيص -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>مفتاح الرخصة</th>
+                                <th>النوع</th>
+                                <th>الحالة</th>
+                                <th>المستخدم</th>
+                                <th>الأجهزة</th>
+                                <th>تاريخ الإنشاء</th>
+                                <th>تاريخ الانتهاء</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for license in licenses %}
+                            <tr>
+                                <td>
+                                    <code>{{ license.license_key }}</code>
+                                    <button class="btn btn-sm btn-outline-secondary ms-2" onclick="copyToClipboard('{{ license.license_key }}')">
+                                        <i class="bi bi-copy"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    <span class="badge bg-{{ 'success' if license.plan_type == 'premium' else 'info' if license.plan_type == 'standard' else 'warning' }}">
+                                        {{ license.plan_type }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if license.status == 'active' %}
+                                        <span class="badge badge-active">نشطة</span>
+                                    {% elif license.status == 'expired' %}
+                                        <span class="badge badge-expired">منتهية</span>
+                                    {% elif license.status == 'suspended' %}
+                                        <span class="badge badge-suspended">موقوفة</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ license.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if license.email %}
+                                        {{ license.email }}<br>
+                                        <small class="text-muted">{{ license.name or '' }}</small>
+                                    {% else %}
+                                        <span class="text-muted">غير مرتبط</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ license.device_count }}/{{ license.max_devices }}
+                                </td>
+                                <td>{{ license.created_at.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    {% if license.expiry_date %}
+                                        {{ license.expiry_date.strftime('%Y-%m-%d') }}
+                                        {% set days_left = (license.expiry_date - now).days %}
+                                        {% if days_left <= 7 and days_left > 0 %}
+                                            <br><small class="text-warning">({{ days_left }} يوم)</small>
+                                        {% elif days_left <= 0 %}
+                                            <br><small class="text-danger">(منتهية)</small>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-muted">غير محدد</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ url_for('admin.edit_license', license_key=license.license_key) }}"
+                                           class="btn btn-outline-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="{{ url_for('admin.delete_license', license_key=license.license_key) }}"
+                                           class="btn btn-outline-danger"
+                                           onclick="return confirm('هل أنت متأكد من حذف هذه الرخصة؟')">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- الترقيم -->
+                {% if total_pages > 1 %}
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        {% for page in range(1, total_pages + 1) %}
+                        <li class="page-item {% if page == current_page %}active{% endif %}">
+                            <a class="page-link" href="?page={{ page }}&search={{ search }}&status={{ status_filter }}">
+                                {{ page }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert('تم نسخ مفتاح الرخصة: ' + text);
+            }, function(err) {
+                console.error('فشل النسخ: ', err);
+            });
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
