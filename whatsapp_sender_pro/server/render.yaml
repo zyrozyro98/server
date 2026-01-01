@@ -2,7 +2,6 @@ services:
   - type: web
     name: whatsapp-sender-server
     env: python
-    rootDir: server
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn server:app
     envVars:
@@ -16,6 +15,10 @@ services:
         generateValue: true
       - key: TELEGRAM_BOT_TOKEN
         sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: whatsapp-db
+          property: connectionString
 
 databases:
   - name: whatsapp-db
