@@ -36,7 +36,7 @@ class LicenseManager:
         self.license_info = {}
 
         # إعدادات الاتصال بالسيرفر
-        self.server_url = "https://whatsapp-sender-server.onrender.com"  # تغيير لرابط السيرفر الحقيقي
+        self.server_url = "https://server-hxb7.onrender.com"  # تغيير لرابط السيرفر الحقيقي
         self.api_timeout = 10
 
         # التشفير
@@ -439,4 +439,5 @@ class LicenseManager:
             return True, "تم تفعيل النسخة التجريبية لمدة 7 أيام"
 
         except Exception as e:
+
             return False, f"خطأ في التفعيل التجريبي: {str(e)}"
