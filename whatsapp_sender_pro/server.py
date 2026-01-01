@@ -42,7 +42,7 @@ API_KEYS = {
 }
 
 # إعدادات قاعدة البيانات
-DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///licenses.db')
+DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://whatsapp_user:Nnfq2JfgR9A9yxLpk8pAOTP01G18MDUq@dpg-d5bejb15pdvs73bhp0gg-a/whatsapp_licenses')
 
 
 def get_db_connection():
