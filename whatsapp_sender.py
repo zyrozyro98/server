@@ -47,7 +47,7 @@ class SecureSubscriptionManager:
     def __init__(self):
         # إعدادات السيرفر
         self.SERVER_URL = "https://server-hxb7.onrender.com"
-        self.API_KEY = "YES2Z8924_0"
+        self.API_KEY = "srv-d5bedjali9vc73bm33k0"
         self.API_URL = f"{self.SERVER_URL}/api/v1"
 
         # ملفات النظام
@@ -2328,4 +2328,5 @@ if __name__ == "__main__":
             pass
 
     # تشغيل التطبيق
+
     main()
