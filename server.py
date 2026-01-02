@@ -16,7 +16,7 @@ CORS(app)  # تمكين CORS للاتصال من التطبيق
 
 # إعدادات قاعدة البيانات
 DATABASE_FILE = "subscriptions.db"
-API_KEY = "YES2Z8924_0"
+API_KEY = "srv-d5bedjali9vc73bm33k0"
 
 def init_database():
     """تهيئة قاعدة البيانات"""
