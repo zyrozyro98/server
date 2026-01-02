@@ -1,12 +1,11 @@
-# المكتبات المطلوبة
+Flask==2.3.3
+Flask-CORS==4.0.0
+gunicorn==21.2.0
 requests==2.31.0
 pyautogui==0.9.54
 pyperclip==1.8.2
 psutil==5.9.6
 Pillow==10.1.0
-
-# إضافات (اختيارية للتقارير المتقدمة)
 pandas==2.1.4
 openpyxl==3.1.2
-
 fpdf2==2.7.7
