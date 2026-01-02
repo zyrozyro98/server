@@ -1,0 +1,31 @@
+{
+  "security": {
+    "api_key": "YES2Z8924_0",
+    "max_offline_days": 3,
+    "max_devices_per_license": 5,
+    "license_expiry_warning_days": 7,
+    "auto_logout_minutes": 30,
+    "max_failed_attempts": 5,
+    "lockout_minutes": 15
+  },
+  "server": {
+    "url": "https://server-hxb7.onrender.com",
+    "api_version": "v1",
+    "timeout_seconds": 10,
+    "retry_attempts": 3
+  },
+  "features": {
+    "images_mode": true,
+    "messages_only_mode": true,
+    "bulk_sending": true,
+    "reports": true,
+    "templates": true,
+    "backup": true
+  },
+  "limits": {
+    "max_images_per_day": 1000,
+    "max_messages_per_day": 2000,
+    "max_contacts_per_file": 5000,
+    "max_file_size_mb": 50
+  }
+}
