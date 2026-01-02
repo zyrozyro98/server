@@ -17,7 +17,7 @@ class AdminPanel:
 
         # إعدادات السيرفر
         self.server_url = "https://server-hxb7.onrender.com"
-        self.api_key = "YES2Z8924_0"
+        self.api_key = "srv-d5bedjali9vc73bm33k0"
 
         self.setup_ui()
 
